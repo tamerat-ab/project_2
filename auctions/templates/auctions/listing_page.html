@@ -1,0 +1,49 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {{user.username}}
+    {{Auction_list.item_name}}
+   {{ Auction_list.price}}
+   {{Auction_list.date_created}}
+   {{Auction_list.amount}}
+   <img src="img_obj.image.url" alt="">
+   {{% if watched %}}
+    <h3> the item is in the watch list</h3>
+    <a href="{% url 'delete_listing' item_id %}">delete item form the watchlist</a>
+    {% else %}
+    <a href="{%url 'add_to_list' item-id %}">add to watchlist</a>
+    {{% endif %}}
+  <a href=""></a>
+  <form action="{% url 'update_bid % item_id}">
+    {% csrf_token %}
+    <input type="number" name="bid_price">
+    <input type="submit" value="Place Bid" >
+  </form>
+  {% if bid_price_new %}
+  {% for current_bid in bid_price_new %}
+    <h2> ${{current_bid}} </h2>
+   <h3> {% forloop.count %} bid(s) so far: your pid is the current bid</h3>
+  {%endfor%}
+  {% else%}
+  {{bid_price_error}}
+
+  {% endif %}
+  {{error_message}}
+
+  
+<a href="{% url 'close_bid' item_id" %}> close bid</a>
+
+<h3> {{comment}} </h3>
+
+<form action="{% url 'comments' item-id %}">
+    <textarea name="comment" id="" cols="3" rows="1">
+
+    </textarea>
+    <input type="submit">
+</form>
+
+   
+  
+    
+   
+{% endblock %}

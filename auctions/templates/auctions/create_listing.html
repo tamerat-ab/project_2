@@ -1,0 +1,23 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit"> upload </button>
+
+</form>
+{% if img.obj %}
+<h3>Successfully uploaded : {{img_obj.item_name}}</h3>
+<img src="img_obj.image.url" alt="">
+
+
+<!-- <form action="create_list" method="POST">
+    {% csrf_token %}
+  Item_name: <input type="text" name="item_name" placeholder="item_name">
+  Price: <input type="text" name="price" placeholder="price">
+  Image: <input type="image" name="image" >
+  description: <input type="text" name="description" placeholder="description">
+  <input type="submit">
+</form> -->
+{% endblock %}
