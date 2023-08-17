@@ -4,11 +4,16 @@
     <h2>Active Listings</h2>
     {% for active_listing in active_listings %}
   
-    <h3> {{active_listing.item_name}} <</h3>
+    <h3> {{active_listing.item_name}} </h3>
     <h3>price: ${{ active_listing.price}} </h3>
    <h3>{{active_listing.date_created}}</h3>
    <h3> {{active_listing.amount}}</h3>
-    {% endfor %}
+   
+  
+   <a href="{% url 'listing_page' active_listing.id %}"> <img  src="" alt="" width="200" height="200"> </a>
+  
+  
+   {% endfor %}
 
     {{no_active_listings}}
 {% endblock %}

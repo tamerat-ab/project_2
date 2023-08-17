@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from datetime import datetime
 
 
 
@@ -16,18 +17,18 @@ class Auction_list(models.Model):
     price = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
     amount = models.CharField(max_length=200, blank=True, null=True)
-    image =models.ImageField(upload_to='auction/images', max_length=20,height_field=20,width_field=20)
+    image =models.ImageField(upload_to='auction/images', blank=True , default=None)
     # def __str__(self):
     #     return self.item_name
     
 class Bids(models.Model):
     user =models.ForeignKey(Auction_list, on_delete=models.CASCADE)   
-    category = models.CharField(max_length=200)
+    # category = models.CharField(max_length=200)
     bid_price = models.IntegerField()
-    is_active = models.BooleanField(default=False)
+    # is_active = models.BooleanField(default=False)
     # Override the __unicode__() method to return out something meaningful!
-    def __unicode__(self):
-        return self.user.username
+    # def __unicode__(self):
+    #     return self.user.username
      
 
 class Comments(models.Model):
@@ -35,7 +36,8 @@ class Comments(models.Model):
     comment_text = models.CharField(max_length=200)
     
 class Watchlist(models.Model):
-    Auction_list=models.ForeignKey(Auction_list,on_delete=models.CASCADE)
-    category = models.CharField(max_length=200)
-    # def __unicode__(self):
-    #     return self.
+    item_list=models.ForeignKey(Auction_list,on_delete=models.CASCADE)
+    date_created=models.DateTimeField(default=datetime.now)
+    # category = models.CharField(max_length=200, default=None)
+    def __unicode__(self):
+        return self.category
