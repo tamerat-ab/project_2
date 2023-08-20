@@ -161,6 +161,13 @@ def add_to_watchlist(request, id):
        
         # name=watchlist_item.item_name
         return render(request,'Auctions/watchlist.html',{'name':name, 'id':id})
+    
+    # this is a new idea
+    # dic={}
+    # for every item list create a corresponding id and save
+    # then update the dictionry 
+    # then in the html part----- you can pass the dictionary as context
+
 
 def category(request):
     return render(request,'Auctions/category.html',{'category':'None'})
