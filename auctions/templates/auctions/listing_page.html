@@ -16,15 +16,16 @@
 
             <img src="{{auction.image.url}}" width="200" height="200">
 
+            
             <h3>{{auction.item_name}}</h3>
             <h6>Origional Price: {{ auction.price}}</h6> 
             <!-- <h3>{{auction.date_created}}</h3> -->
             <!-- <h3>{{auction.amount}}</h3> -->
             
-
-
+          {% if bid %}
           <h3>Bid Price: ${{bid}}</h3>
           <h6>{{total_bid}} bid(s) so far. you bid is the current bid </h6>
+          {% endif %}
 
           {% if status == False %}
                 <h6 class="bid-dtl" > The Bid Is Closed </h6>
@@ -35,7 +36,7 @@
           {% else %}
             <form action="{% url 'update_bid' auction.id %}" method="post">
               {% csrf_token %}
-              <input id="bid-price" type="number" name="bid_price"> <br>
+              <input id="bid-price" type="number" name="bid_price" required >  <br>
               <input id="bid-sbt-btn" type="submit" value="Place Bid" >
             </form>
            
@@ -44,16 +45,19 @@
             {% endfor %}
         
          {% endif %}
-          
-          {% if user %}
-          <a href="{% url 'close_bid' auction.id %}"> close bid </a>
-           {% endif %}
-           {% for comment in comment%}
+        
+                  {% if auction.user == user %}
+                  <a id="close-bid" href="{% url 'close_bid' auction.id %}"> close bid </a>
+                  {% endif %}
+         
+           {% for comment in comment %}
            <div class="comment-div">
           <div class="cmt-txt"> {{comment.comment_text}} </div>
           <div class="cmt-dt"> {{comment.date}} </div>
            </div>
           {% endfor %}
+
+          <!-- {% if auction.user %} -->
           <form action="{% url 'comment' auction.id %}" method="post">
             {% csrf_token %}
               <textarea name="comment" id="bid-comment" placeholder="write your comment here">
@@ -61,6 +65,7 @@
               </textarea><br>
               <input id="bid-cmt-sbt" type="submit"  value="post">
           </form>
+          <!-- {% endif %} -->
           <h4>Details</h4>
           <ul>
             <li>{{ auction.user}}</li>

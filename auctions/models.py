@@ -20,13 +20,14 @@ class Auction_list(models.Model):
     amount = models.CharField(max_length=200, blank=True, null=True)
     image =models.ImageField(upload_to='auction/images', blank=True , default=None)
     category = models.CharField (choices=category_choices,default=None, max_length=200, blank=True, null=True)
-    
+    is_active=models.BooleanField(default=True, null=True)
+
 class Bids(models.Model):
     auction_item=models.ForeignKey(Auction_list, on_delete=models.CASCADE)  
     bid_price = models.IntegerField()
-    is_active=models.BooleanField(default=True, null=True)
+    # is_active=models.BooleanField(default=True, null=True)
     biding_user_id=models.IntegerField()
-    # item_id = models.
+    
   
      
 
@@ -41,5 +42,5 @@ class Watchlist(models.Model):
     item_list=models.ForeignKey(Auction_list,on_delete=models.CASCADE)
     date_created=models.DateTimeField(default=datetime.now)
     item_id=models.IntegerField(null=False,blank=False)
-    # category = models.CharField(max_length=200, default=None)
+   
 

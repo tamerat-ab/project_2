@@ -13,15 +13,17 @@ from .forms import List_form
 
 
 def index(request):
-    
+    user=request.user.id
+    watch_count=Watchlist.objects.filter(user=user).count()
     active_listing=Auction_list.objects.all()
     if active_listing:
         
-        return render(request, "Auctions/index.html",{"active_listings":active_listing})
+        return render(request, "Auctions/index.html",{"active_listings":active_listing,'watch_count':watch_count})
     else:
-        return render(request, 'Auctions/index.html',{'no_active_listings':'no_active_listings'})  
+        return render(request, 'Auctions/index.html',{'no_active_listings':'    NO Active Listings'})  
 
-
+# def bid_status(request):
+#     user=
 def login_view(request):
     if request.method == "POST":
 
@@ -102,22 +104,45 @@ def listing_page(request,id):
     user=request.user
     item=Auction_list.objects.get(id=id)
     total_bid=Bids.objects.filter(auction_item=item).count()
-    bid=Bids.objects.filter(auction_item=item).order_by('-id')[0]
-    comment=Comments.objects.all()
+    watch_count=Watchlist.objects.filter(user=user.id).count()
+    status=item.is_active
+    comment=Comments.objects.filter(bids=item)
     if request.method == "GET":
-        if  Watchlist.objects.filter(item_id=id).exists():
+        if  Watchlist.objects.filter(item_id=id) and Bids.objects.filter(auction_item=item):
             watch=Watchlist.objects.get(item_id=id)
             watch_count=Watchlist.objects.all().count()
             watched=watch.item_id
+       
+            bid= Bids.objects.filter(auction_item=item).order_by('-id')[0]
+            total_bid=Bids.objects.filter(auction_item=item).count()
             bid=bid.bid_price
             bid_status=Bids.objects.filter(auction_item=item).order_by('-id')[0]
-            status=bid_status.is_active
+           
             biding_id=bid_status.biding_user_id
+            # comment=Comments.objects.filter( bids=item)
             context={"auction":item,'watch':  watched, 'bid':bid, 'total_bid':total_bid,
                     'status':status,'biding_id':biding_id,'comment':comment,'watch_count':watch_count}
             return render(request, "auctions/listing_page.html",context)
+        elif Watchlist.objects.filter(item_id=id):
+            watch=Watchlist.objects.get(item_id=id)
+            watch_count=Watchlist.objects.all().count()
+            watched=watch.item_id
+            # comment=Comments.objects.filter(bids=item)
+            context={"auction":item,'watch':  watched,'comment':comment,'watch_count': watch_count}
+            return render(request, "auctions/listing_page.html",context)
+        elif Bids.objects.filter(auction_item=item):
+            bid= Bids.objects.filter(auction_item=item).order_by('-id')[0]
+            total_bid=Bids.objects.filter(auction_item=item).count()
+            bid=bid.bid_price
+            bid_status=Bids.objects.filter(auction_item=item).order_by('-id')[0]
+            
+            biding_id=bid_status.biding_user_id
+            # comment=Comments.objects.filter(bids=item)
+            context={"auction":item,'bid':bid, 'total_bid':total_bid,
+                    'status':status,'biding_id':biding_id,'comment':comment,'watch_count':watch_count}
+            return render(request, "auctions/listing_page.html",context)
         else:
-            return render(request, "auctions/listing_page.html",{"auction":item})
+            return render(request, "auctions/listing_page.html",{"auction":item, 'comment':comment})
     
 
 
@@ -156,25 +181,7 @@ def listing_category(request,category):
     auction_items=Auction_list.objects.filter(category=category)
     return render(request,'auctions/listing_category.html',{'category':auction_items}) 
          
-                 
-        
-
-
-#     item_list=Auction_list.objects.all()
-#     for item in item_list:
-#         cat=item.category
-#         category.append(cat)
-#     category
-
-#     for i in category:
-#         # i=[i for i in item_list if i==item_list.category]
-#         for item in item_list:
-#             if i == item.category:
-#                 i=[]
-#             dict[i]=i.append(item.category)
-
-   
-
+                
 def update_bid(request ,item_id):
     user=request.user
     if request.method =='POST':
@@ -188,9 +195,10 @@ def update_bid(request ,item_id):
         origional_price=auction_item.price
         if Bids.objects.filter(auction_item=auction_item).exists():
           bid_price_existed=Bids.objects.filter(auction_item=auction_item).order_by('-id')[0]
-          if( bid_price_existed.is_active==True ) and  (bid_price_new > bid_price_existed.bid_price):  
+          if( auction_item.is_active==True ) and  (bid_price_new > bid_price_existed.bid_price):  
             
-                bid=Bids(auction_item=auction_item,bid_price=bid_price_new, is_active=True,biding_user_id=biding_user)
+                bid=Bids(auction_item=auction_item,bid_price=bid_price_new,biding_user_id=biding_user)
+
                 bid.save()
                 
                 # bid_price_new=Bids.objects.filter(auction_item=auction_item)
@@ -202,7 +210,7 @@ def update_bid(request ,item_id):
 
         else:
             if int( bid_price_new) > int(origional_price):
-                new_bid=Bids(auction_item=auction_item, bid_price=bid_price_new)
+                new_bid=Bids(auction_item=auction_item, bid_price=bid_price_new, biding_user_id=biding_user)
                 new_bid.save()
              
                 return HttpResponseRedirect(reverse('listing_page', args=(item_id,)))
@@ -213,14 +221,15 @@ def update_bid(request ,item_id):
         
 def close_bid(request, id):
     user=request.user
-    auction_item=Auction_list.objects.get(id=id)
-    if Bids.objects.filter(auction_item=auction_item).exists:
-        latest=Bids.objects.filter(auction_item=auction_item).order_by('-id')[0]
-        latest.is_active=False
-        latest.save()
+    latest=Auction_list.objects.get(id=id)
+    latest.is_active=False
+    # if Bids.objects.filter(auction_item=auction_item).exists:
+    #     latest=Bids.objects.filter(auction_item=auction_item).order_by('-id')[0]
+    #     latest.is_active=False
+    latest.save()
     messages.success(request, 'the bid is closed successfully')
     return HttpResponseRedirect(reverse('listing_page', args=(id,)))
-    return render(request,'Auctions/listing_page.html',{"bid_status":"The bid is closed"})
+    # return render(request,'Auctions/listing_page.html',{"bid_status":"The bid is closed"})
 
 def comment(request,id):
     user=request.user

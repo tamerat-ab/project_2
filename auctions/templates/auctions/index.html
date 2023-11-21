@@ -2,10 +2,10 @@
 
 {% block body %}
 <h2>Active Listings</h2>
-
+<h4>{{no_active_listings}}</h4>
 {% for active_listing in active_listings %}
-{{no_active_listings}}
-{% if active_listing.is_active == True %}
+
+
 <div class="item-div">
  
   
@@ -31,7 +31,7 @@
     {{no_active_listings}}
 
 </div>
-{% endif %}
+
 {% endfor %}
 {% endblock %}
 
