@@ -6,6 +6,119 @@
         <title>{% block title %}Auctions{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+
+    <style>
+        .item-div{
+ 
+ display: flex;
+ flex-direction:row;
+ flex-wrap: nowrap;
+ justify-content: flex-start;
+ align-items: stretch;
+ align-content: stretch;
+ margin-top: 2%; 
+ border: 2px solid;
+  position:relative; 
+ margin-left: 1%;
+ padding:6px;
+width:90%;
+height: 35%;
+
+}
+.listing-div{
+    display: flex;
+ flex-direction:column;
+ flex-wrap: nowrap;
+ justify-content: flex-start;
+ align-items: stretch;
+ align-content: stretch;
+ margin-top: 2%; 
+ border: 2px solid;
+  position:relative; 
+ margin-left: 1%;
+ padding:6px;
+width:90%;
+height:auto;
+}
+#bid-price{
+    width:90%
+}
+#watchlist{
+    background-color: rgb(82, 81, 81);
+    width:20%;
+    padding:2px;;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+}
+#bid-sbt-btn,#bid-cmt-sbt{
+    margin-top:1%;
+    background-color: rgb(7, 7, 244);
+    width:20%
+}
+#date{
+    color: rgb(198, 205, 211);
+    
+}
+
+#bid-comment{
+    width: 80%;
+    height: 10vh;
+    border-radius: 15px;
+}
+
+.notification {
+  /* background-color: #555; */
+  color: blue;
+  text-decoration: none;
+  padding: 8px 15px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background: red;
+  color:white;
+}.comment-div{
+display: flex;
+ flex-direction:column;
+ flex-wrap: nowrap;
+ justify-content: flex-start;
+ align-items: stretch;
+ align-content: stretch;
+ margin-top: 1%; 
+ border: 2px solid;
+  position:relative; 
+ /* margin-left: 1%; */
+ padding:6px;
+width:80%;
+height:auto;
+border-radius: 15px;
+margin-bottom: 2%;
+background-color: rgb(180, 174, 174);
+
+}
+.cmt-txt,cmt-dt{
+    /* background-color: rgb(237, 233, 233); */
+    color:rgb(36, 36, 219)
+}
+.bid-dtl{
+    color:rgb(23, 23, 240);
+    width:80%;
+    height:80%;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    text-align: center;
+    background-color: rgb(181, 178, 178);
+}
+    </style>
     </head>
     <body>
         <h1>Auctions</h1>
@@ -24,10 +137,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'watchlist' %}">watchlist</a>
+                    <a href="{% url 'watchlist' %}" class="notification nav-link">
+                        <span>  Watchlist</span>
+                        <span class="badge">{{watch_count}}</span>
+                      </a>
+
+                    <!-- <a class="nav-link" href="{% url 'watchlist' %}">watchlist</a> -->
                 </li>
+
+
                 <li class="nav-item">
+                    
                     <a class="nav-link" href="{% url 'list_form' %}">create listing</a>
                 </li>
                 <li class="nav-item">

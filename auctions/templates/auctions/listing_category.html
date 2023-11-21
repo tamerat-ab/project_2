@@ -1,0 +1,29 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+
+{% for item in category %}
+
+<div class="img-div">
+    {% if item.image %}
+     
+    <a href="{% url 'listing_page' item.id %}"> <img  src="{{ item.image.url }}" alt="" width="200" height="200"> </a>
+    {% else %}
+     <a href="{% url 'listing_page' item.id %}"> <img  src="" alt="" width="200" height="200"> </a>
+     {% endif %}
+</div>
+
+<div class="detail-div">
+    <h3>{{item.item_name}} </h3>
+    <h5>price: ${{ item.price}} </h5>
+ 
+    <h5>Shoe {{cat.amount}}</h5>
+    <h6 id="date">created: {{item.date_created}}</h6>
+</div>
+
+
+{% endfor %}
+
+
+{% endblock %}

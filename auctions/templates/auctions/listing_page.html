@@ -2,49 +2,71 @@
 
 {% block body %}
 {%if auction %}
-   <img src="{{auction.image.url}}" width="200" height="200">
 
-   <h3>{{auction.item_name}}</h3>
-  <h3>{{ auction.price}}</h3> 
-   <h3>{{auction.date_created}}</h3>
-   <h3>{{auction.amount}}</h3>
-   
-  
-   {% if watched %}
-    <h3> the item is in the watch list</h3>
-    <a href="{% url 'delete_listing' auction.id %}">delete item form the watchlist</a>
-       {{message}}
-    {% else %}
-    <a href="{% url 'add_to_watchlist' auction.id %}"> add to watchlist</a>
-    {% endif %}
+<div class="listing-div">
+            <h3> Listing: {{auction.item_name}}</h3>
+            
+            {% if watch  %}
+            <a id="watchlist" href="{% url 'delete_listing' auction.id %}">Delete watchlist</a>
+              {{message}}
+            {% else %}
+            <a id="watchlist" href="{% url 'add_to_watchlist' auction.id %}"> Add to watchlist</a>
+            {% endif %}
 
-  <a href=""></a>
-  <form action="{% url 'update_bid' auction.id %}" method="post">
-    {% csrf_token %}
-    <input type="number" name="bid_price">
-    <input type="submit" value="Place Bid" >
-  </form>
-  {% if bid_price_new %}
-  {% for current_bid in bid_price_new %}
-    <h2> ${{current_bid.bid_price}} </h2>
-   <h3> {{ forloop.count }} bid(s) so far: your pid is the current bid</h3>
-  {%endfor%}
-  {% else%}
-  {{bid_price_error}}
 
-  {% endif %}
-  {{error_message}}
+            <img src="{{auction.image.url}}" width="200" height="200">
 
-  
-<a href="{% url 'close_bid' auction.id %}"> close bid </a>
+            <h3>{{auction.item_name}}</h3>
+            <h6>Origional Price: {{ auction.price}}</h6> 
+            <!-- <h3>{{auction.date_created}}</h3> -->
+            <!-- <h3>{{auction.amount}}</h3> -->
+            
 
-<h3> {{comment}} </h3>
 
-<form action="{% url 'comments' auction.id % }">
-    <textarea name="comment" id="" cols="3" rows="1">
+          <h3>Bid Price: ${{bid}}</h3>
+          <h6>{{total_bid}} bid(s) so far. you bid is the current bid </h6>
 
-    </textarea>
-    <input type="submit">
-</form>
+          {% if status == False %}
+                <h6 class="bid-dtl" > The Bid Is Closed </h6>
+                {% if biding_id == user.id %}
+                <h6>{{user.username}} you are a winner </h6>
+                {% endif %}
+
+          {% else %}
+            <form action="{% url 'update_bid' auction.id %}" method="post">
+              {% csrf_token %}
+              <input id="bid-price" type="number" name="bid_price"> <br>
+              <input id="bid-sbt-btn" type="submit" value="Place Bid" >
+            </form>
+           
+           {% for message in messages %}
+             <h6>{{message}}</h6>
+            {% endfor %}
+        
+         {% endif %}
+          
+          {% if user %}
+          <a href="{% url 'close_bid' auction.id %}"> close bid </a>
+           {% endif %}
+           {% for comment in comment%}
+           <div class="comment-div">
+          <div class="cmt-txt"> {{comment.comment_text}} </div>
+          <div class="cmt-dt"> {{comment.date}} </div>
+           </div>
+          {% endfor %}
+          <form action="{% url 'comment' auction.id %}" method="post">
+            {% csrf_token %}
+              <textarea name="comment" id="bid-comment" placeholder="write your comment here">
+
+              </textarea><br>
+              <input id="bid-cmt-sbt" type="submit"  value="post">
+          </form>
+          <h4>Details</h4>
+          <ul>
+            <li>{{ auction.user}}</li>
+            <li>Category:{{auction.category}}</li>
+          </ul>
+
+</div>
  {% endif %}
 {% endblock %}

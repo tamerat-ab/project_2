@@ -1,19 +1,38 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-    {% for active_listing in active_listings %}
+<h2>Active Listings</h2>
+
+{% for active_listing in active_listings %}
+{{no_active_listings}}
+{% if active_listing.is_active == True %}
+<div class="item-div">
+ 
   
-    <h3> {{active_listing.item_name}} </h3>
-    <h3>price: ${{ active_listing.price}} </h3>
-   <h3>{{active_listing.date_created}}</h3>
-   <h3> {{active_listing.amount}}</h3>
-   
-  
-   <a href="{% url 'listing_page' active_listing.id %}"> <img  src="" alt="" width="200" height="200"> </a>
-  
-  
-   {% endfor %}
+
+<div class="img-div">
+                {% if active_listing.image %}
+                 
+                <a href="{% url 'listing_page' active_listing.id %}"> <img  src="{{ active_listing.image.url }}" alt="" width="200" height="200"> </a>
+                {% else %}
+                 <a href="{% url 'listing_page' active_listing.id %}"> <img  src="" alt="" width="200" height="200"> </a>
+                 {% endif %}
+</div>
+
+<div class="detail-div">
+                <h3>{{active_listing.item_name}} </h3>
+                <h5>price: ${{ active_listing.price}} </h5>
+             
+                <h5>Shoe {{active_listing.amount}}</h5>
+                <h6 id="date">created: {{active_listing.date_created}}</h6>
+</div>
+ 
 
     {{no_active_listings}}
+
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}
+
+<!-- {% if active_listing.image.url %} {{ active_listing.image.url }} {% else %} null {% endif %} -->

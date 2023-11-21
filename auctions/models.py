@@ -12,32 +12,34 @@ class User(AbstractUser):
     
     pass
 class Auction_list(models.Model):
+    category_choices=(('CLOTHE','Clothe'),('SHOE','Shoe'),('BOOK','Book'),('BAGE','Bag'),('CAR','Car'),('NONE',None),)
     user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     item_name=models.CharField(max_length=200)
     price = models.CharField(max_length=200)
     date_created = models.DateTimeField(auto_now_add=True)
     amount = models.CharField(max_length=200, blank=True, null=True)
     image =models.ImageField(upload_to='auction/images', blank=True , default=None)
-    # def __str__(self):
-    #     return self.item_name
+    category = models.CharField (choices=category_choices,default=None, max_length=200, blank=True, null=True)
     
 class Bids(models.Model):
-    user =models.ForeignKey(Auction_list, on_delete=models.CASCADE)   
-    # category = models.CharField(max_length=200)
+    auction_item=models.ForeignKey(Auction_list, on_delete=models.CASCADE)  
     bid_price = models.IntegerField()
-    # is_active = models.BooleanField(default=False)
-    # Override the __unicode__() method to return out something meaningful!
-    # def __unicode__(self):
-    #     return self.user.username
+    is_active=models.BooleanField(default=True, null=True)
+    biding_user_id=models.IntegerField()
+    # item_id = models.
+  
      
 
 class Comments(models.Model):
-    bids=models.ForeignKey(Bids, on_delete=models.CASCADE)
+    bids=models.ForeignKey(Auction_list, on_delete=models.CASCADE)
     comment_text = models.CharField(max_length=200)
+    date=models.DateField(auto_now_add=True)
+
     
 class Watchlist(models.Model):
+    user =models.ForeignKey(User, on_delete=models.CASCADE)
     item_list=models.ForeignKey(Auction_list,on_delete=models.CASCADE)
     date_created=models.DateTimeField(default=datetime.now)
+    item_id=models.IntegerField(null=False,blank=False)
     # category = models.CharField(max_length=200, default=None)
-    def __unicode__(self):
-        return self.category
+
